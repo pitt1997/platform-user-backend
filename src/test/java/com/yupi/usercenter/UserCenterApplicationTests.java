@@ -18,6 +18,12 @@ class UserCenterApplicationTests {
 
     @Test
     void contextLoads() {
+
+        String encryptPassword = DigestUtils.md5DigestAsHex(("yupi" + "12345678").getBytes());
+        System.out.printf(encryptPassword);
+
     }
+
+
 
 }

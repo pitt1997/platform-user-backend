@@ -60,6 +60,16 @@ public class User implements Serializable {
     private String phone;
 
     /**
+     * 标签列表 - json 序列化字符串
+     */
+    private String tags;
+
+    /**
+     * 个人信息
+     */
+    private String profile;
+
+    /**
      * 创建时间
      */
     private Date createTime;

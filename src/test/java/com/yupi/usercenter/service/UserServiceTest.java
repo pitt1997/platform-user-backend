@@ -1,7 +1,10 @@
 package com.yupi.usercenter.service;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import com.yupi.usercenter.model.domain.User;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,9 +44,9 @@ public class UserServiceTest {
     @Test
     void userRegister() {
         String userAccount = "yupi";
-        String userPassword = "";
-        String checkPassword = "123456";
-        String planetCode = "1";
+        String userPassword = "12345678";
+        String checkPassword = "12345678";
+        String planetCode = "2";
         long result = userService.userRegister(userAccount, userPassword, checkPassword, planetCode);
         Assertions.assertEquals(-1, result);
 
@@ -73,5 +76,13 @@ public class UserServiceTest {
         userAccount = "yupiAdmin";
         result = userService.userRegister(userAccount, userPassword, checkPassword, planetCode);
         // Assertions.assertTrue(result <= 0);
+    }
+
+    @Test
+    public void searchUsersByTags() {
+        List<String> tagNameList = Arrays.asList("JAVA", "Python");
+        List<User> userList = userService.searchUsersByTags(tagNameList);
+        Assert.assertNotNull(userList);
+
     }
 }

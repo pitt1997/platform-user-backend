@@ -10,6 +10,7 @@ import com.yupi.usercenter.model.domain.request.UserLoginRequest;
 import com.yupi.usercenter.model.domain.request.UserRegisterRequest;
 import com.yupi.usercenter.service.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -23,9 +24,13 @@ import static com.yupi.usercenter.constant.UserConstant.USER_LOGIN_STATE;
 * 用户接口
 *
 * @author yupi
+*
+*
+* allowCredentials: 允许客户端携带 cookie 验证信息，该配置默认配置为 false
 */
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class UserController {
     @Resource
     private UserService userService;
@@ -99,6 +104,19 @@ public class UserController {
         return ResultUtils.success(resultList);
     }
 
+    /**
+     * 根据标签查询用户
+     */
+    @GetMapping("/search/tags")
+    public BaseResponse<List<User>> searchUserByTags(@RequestParam(required = false) List<String> tagNameList) {
+        if (CollectionUtils.isEmpty(tagNameList)) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR);
+        }
+
+        List<User> userList = userService.searchUsersByTags(tagNameList);
+        return ResultUtils.success(userList);
+    }
+
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
         if (!isAdmin(request)) {
@@ -109,6 +127,25 @@ public class UserController {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR);
         }
         boolean result = userService.removeById(id);
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param user
+     * @param request
+     * @return
+     */
+    @PostMapping("/update")
+    public BaseResponse<Integer> updateUser(@RequestBody User user, HttpServletRequest request) {
+        // 1. 校验参数是否为空
+        if (user == null) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR);
+        }
+
+        User loginUser = userService.getCurrentUser(request);
+        int result = userService.updateUser(user, loginUser);
         return ResultUtils.success(result);
     }
 
