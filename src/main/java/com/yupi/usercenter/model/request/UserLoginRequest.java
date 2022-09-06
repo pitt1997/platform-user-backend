@@ -1,4 +1,4 @@
-package com.yupi.usercenter.model.domain.request;
+package com.yupi.usercenter.model.request;
 
 import lombok.Data;
 

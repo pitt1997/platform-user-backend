@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/platform
     username: root
-    password: 123456
+    password: 12345678
   # session 失效时间
   session:
     timeout: 86400
@@ -18,7 +18,7 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
   redis:
-    host: localhost
+    host: 101.35.97.124
     port: 6379
     database: 1 # 默认使用 0 库
     password:
