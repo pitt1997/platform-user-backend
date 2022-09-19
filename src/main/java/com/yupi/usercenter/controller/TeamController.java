@@ -10,6 +10,9 @@ import com.yupi.usercenter.model.domain.Team;
 import com.yupi.usercenter.model.domain.User;
 import com.yupi.usercenter.model.dto.TeamQuery;
 import com.yupi.usercenter.model.request.TeamAddRequest;
+import com.yupi.usercenter.model.request.TeamJoinRequest;
+import com.yupi.usercenter.model.request.TeamUpdateRequest;
+import com.yupi.usercenter.model.vo.TeamUserVO;
 import com.yupi.usercenter.service.TeamService;
 import com.yupi.usercenter.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /*
 * 队伍接口
@@ -62,12 +66,13 @@ public class TeamController {
     }
 
     @PostMapping("/update")
-    public BaseResponse<Boolean> updateTeam(@RequestBody Team team) {
-        if (team == null) {
+    public BaseResponse<Boolean> updateTeam(@RequestBody TeamUpdateRequest teamUpdateRequest, HttpServletRequest request) {
+        if (teamUpdateRequest == null) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR);
         }
 
-        boolean result = teamService.updateById(team);
+        User loginUser = userService.getCurrentUser(request);
+        boolean result = teamService.updateTeam(teamUpdateRequest, loginUser);
         if (!result) {
             throw new BusinessException(ErrorCodeEnum.SYSTEM_ERROR, "更新失败");
         }
@@ -89,8 +94,19 @@ public class TeamController {
         return ResultUtils.success(team);
     }
 
+    @GetMapping("/list")
+    public BaseResponse<List<TeamUserVO>> listTeams(TeamQuery teamQuery, HttpServletRequest request) {
+        if (teamQuery == null) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR);
+        }
+
+        boolean isAdmin = userService.isAdmin(request);
+        List<TeamUserVO> teamList = teamService.listTeams(teamQuery, isAdmin);
+        return ResultUtils.success(teamList);
+    }
+
     @GetMapping("/list/page")
-    public BaseResponse<Page<Team>> listTeams(TeamQuery teamQuery) {
+    public BaseResponse<Page<Team>> listTeamsByPage(TeamQuery teamQuery) {
         if (teamQuery == null) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR);
         }
@@ -104,5 +120,15 @@ public class TeamController {
         return ResultUtils.success(resultPage);
     }
 
+    @PostMapping("/join")
+    public BaseResponse<Boolean> joinTeam(@RequestBody TeamJoinRequest teamJoinRequest, HttpServletRequest request) {
+        if (teamJoinRequest == null) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR);
+        }
+
+        User loginUser = userService.getCurrentUser(request);
+        boolean result = teamService.joinTeam(teamJoinRequest, loginUser);
+        return ResultUtils.success(result);
+    }
 
 }

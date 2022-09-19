@@ -287,14 +287,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     /**
-     * 是否为管理员
+     * 是否为管理员 1 为管理员; 0 为普通用户
      * @param loginUser
      * @return
      */
     @Override
     public boolean isAdmin(User loginUser) {
         // TODO 1 != 1 ?
-        boolean result = loginUser.getUserRole() == ADMIN_ROLE;
+        boolean result = loginUser.getUserRole().equals(ADMIN_ROLE);
         return result;
     }
 
