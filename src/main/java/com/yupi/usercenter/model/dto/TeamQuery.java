@@ -4,6 +4,8 @@ import com.yupi.usercenter.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * @author author
  * @date 2022-09-04
@@ -16,6 +18,8 @@ public class TeamQuery extends PageRequest {
      * id
      */
     private Long id;
+
+    private List<Long> idList;
 
     /**
      * 队伍名称
